@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <settings>
+        <!--cacheEnabled: 설정에서 각 매퍼에 설정된 캐시를 전역적으로 사용할지 말지에 대한 여부-->
+        <!--callSettersOnNulls: 가져온 값이 null일때 setter나 맵의 put 메소드를 호출할지를 명시 Map.keySet() 이나 null값을 초기화할때 유용하다. int, boolean 등과 같은 원시타입은 null을 설정할 수 없다는 점은 알아두면 좋다.-->
+        <!--useGeneratedKeys: 생성키에 대한 JDBC 지원을 허용. 지원하는 드라이버가 필요하다. true로 설정하면 생성키를 강제로 생성한다. 일부 드라이버(예를들면, Derby)에서는 이 설정을 무시한다.-->
+        <!--defaultExecutorType: 디폴트 실행자(executor) 설정. SIMPLE 실행자는 특별히 하는 것이 없다. REUSE 실행자는 PreparedStatement를 재사용한다. BATCH 실행자는 구문을 재사용하고 수정을 배치처리한다.-->
+        <setting name="cacheEnabled" value="false" />
+        <setting name="callSettersOnNulls" value="true" />
+        <setting name="useGeneratedKeys" value="true" />
+        <setting name="defaultExecutorType" value="REUSE" />
+        <setting name="jdbcTypeForNull" value="VARCHAR" />
+    </settings>
+
+    <typeAliases>
+        <typeAlias alias="SFCA00TB"         type="com.samsunganycar.model.SFCA00TB" />
+        <typeAlias alias="SFCD01TB"         type="com.samsunganycar.model.SFCD01TB" />
+        <typeAlias alias="SFBD01TB"         type="com.samsunganycar.model.SFBD01TB" />
+        <typeAlias alias="SFBD02TB"         type="com.samsunganycar.model.SFBD02TB" />
+        <typeAlias alias="SFER01TB"         type="com.samsunganycar.model.SFER01TB" />
+        <typeAlias alias="SFIS00TB"         type="com.samsunganycar.model.SFIS00TB" />
+        <typeAlias alias="SFIS01TB"         type="com.samsunganycar.model.SFIS01TB" />
+        <typeAlias alias="SFMN00TB"         type="com.samsunganycar.model.SFMN00TB" />
+        <typeAlias alias="SFOD01TB"         type="com.samsunganycar.model.SFOD01TB" />
+        <typeAlias alias="SFOD03TB"         type="com.samsunganycar.model.SFOD03TB" />
+        <typeAlias alias="SFOD04TB"         type="com.samsunganycar.model.SFOD04TB" />
+        <typeAlias alias="SFPT00TB"         type="com.samsunganycar.model.SFPT00TB" />
+        <typeAlias alias="SFPT01TB"         type="com.samsunganycar.model.SFPT01TB" />
+        <typeAlias alias="SFPT02TB"         type="com.samsunganycar.model.SFPT02TB" />
+        <typeAlias alias="SFPT03TB"         type="com.samsunganycar.model.SFPT03TB" />
+        <typeAlias alias="SFSP00TB"         type="com.samsunganycar.model.SFSP00TB" />
+        <typeAlias alias="SFSP01TB"         type="com.samsunganycar.model.SFSP01TB" />
+        <typeAlias alias="SFSP02TB"         type="com.samsunganycar.model.SFSP02TB" />
+        <typeAlias alias="SFSP03TB"         type="com.samsunganycar.model.SFSP03TB" />
+        <typeAlias alias="SFSP04TB"         type="com.samsunganycar.model.SFSP04TB" />
+        <typeAlias alias="SFTA00TB"         type="com.samsunganycar.model.SFTA00TB" />
+        <typeAlias alias="SFTP00TB"         type="com.samsunganycar.model.SFTP00TB" />
+        <typeAlias alias="SFUS01TB"         type="com.samsunganycar.model.SFUS01TB" />
+        <typeAlias alias="SFUS02TB"         type="com.samsunganycar.model.SFUS02TB" />
+        <typeAlias alias="SFUS03TB"         type="com.samsunganycar.model.SFUS03TB" />
+        <typeAlias alias="SFUS04TB"         type="com.samsunganycar.model.SFUS04TB" />
+        <typeAlias alias="FC_VEHICLE_QUERY" type="com.samsunganycar.model.FC_VEHICLE_QUERY" />
+        <typeAlias alias="FC_VEHICLE"       type="com.samsunganycar.model.FC_VEHICLE" />
+        <typeAlias alias="GE_KIND"          type="com.samsunganycar.model.GE_KIND" />
+    </typeAliases>
+</configuration>
