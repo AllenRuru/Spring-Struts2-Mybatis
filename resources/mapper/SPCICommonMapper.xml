@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SPCI">
+
+    <select id="selectSFCD01TB" parameterType="SFCD01TB" resultType="SFCD01TB">
+        <![CDATA[
+        SELECT	T1.CODE_TYPE
+        		,T1.CODE_TYPE
+        		,T1.CODE_ID
+        		,T1.CODE_NAME
+        		,T1.USE_YN
+        		,T1.SORT_ORDER
+        		,T1.OPTION01
+        		,T1.OPTION02
+        		,T1.OPTION03
+        		,T1.OPTION04
+        		,T1.OPTION05
+        		,T1.OPTION06
+        		,T1.OPTION07
+        		,T1.OPTION08
+        		,T1.OPTION09
+        		,T1.OPTION10
+        		,TO_CHAR(T1.CREATE_TIME, 'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME
+        FROM	SFCD01TB T1
+        WHERE	T1.CODE_TYPE = #{CODE_TYPE}
+        AND		T1.USE_YN = 'Y'
+        ORDER BY T1.SORT_ORDER
+        		,T1.CODE_ID
+        ]]>
+    </select>
+
+    <select id="findCodeName" parameterType="SFCD01TB" resultType="String">
+        <![CDATA[
+        SELECT	T1.CODE_NAME
+        FROM	SFCD01TB T1
+        WHERE	T1.CODE_TYPE = #{CODE_TYPE}
+        AND     T1.CODE_ID = #{CODE_ID}
+        AND		T1.USE_YN = 'Y'
+        ]]>
+    </select>
+
+	<select id="findKindName" parameterType="GE_KIND" resultType="String">
+		<![CDATA[
+		SELECT	KINDCNAME
+		FROM	GE_KIND
+		WHERE	RISKCODE = #{RISKCODE}
+		AND		KINDCODE = #{KINDCODE}
+		]]>
+	</select>
+
+    <insert id="saveError" parameterType="SFER01TB">
+        <![CDATA[
+        INSERT	INTO SFER01TB
+        		(
+        		ERR_CD
+        		,TEMPORARYNO
+        		,SYSERR_MSG
+        		,CREATE_TIME
+        		,SESSION_ID
+        		,IP_ADDR
+        		,USER_AGENT
+        		,COREERR_MSG
+        		,IN_JSON
+        		,OUT_JSON
+        		)
+        VALUES	(
+        		#{ERR_CD}
+        		,#{TEMPORARYNO}
+        		,#{SYSERR_MSG}
+        		,SYSDATE
+        		,#{SESSION_ID}
+        		,#{IP_ADDR}
+        		,#{USER_AGENT}
+        		,#{COREERR_MSG}
+        		,#{IN_JSON}
+        		,#{OUT_JSON}
+        		)
+        ]]>
+    </insert>
+
+
+
+</mapper>
