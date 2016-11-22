@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/jdbc  http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket.xsd"
+    xmlns:websocket="http://www.springframework.org/schema/websocket"
+	default-autowire="byName" default-lazy-init="true">
+
+    <bean id="dataSourceSpied" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="spciDataSource" />
+        <!--<property name="jndiName" value="jdbc/spciweb" />-->
+    </bean>
+    <bean id="dataSource" class="net.sf.log4jdbc.sql.jdbcapi.DataSourceSpy">
+        <constructor-arg ref="dataSourceSpied" />
+    </bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+  		<property name="dataSource" ref="dataSource" />
+        <property name="configLocation" value="classpath:config/mybatis-config.xml" />
+		<property name="mapperLocations" value="classpath*:mapper/SPCI*Mapper.xml" />
+	</bean>
+  	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" name="sqlSessionFactory" ref="sqlSessionFactory" />
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+    <bean name="cmLoader" class="com.samsunganycar.util.CMStaticContentLoader" />
+
+    <bean id="spciCacheService" class="com.samsunganycar.agency.common.service.impl.SPCICacheServiceImpl">
+        <property name="sqlSession" ref="sqlSession" />
+    </bean>
+
+    <bean id="spciUserService" class="com.samsunganycar.agency.common.service.impl.SPCIUserServiceImpl">
+        <property name="sqlSession" ref="sqlSession" />
+    </bean>
+
+    <bean id="spciCommonService" class="com.samsunganycar.agency.common.service.impl.SPCICommonServiceImpl">
+        <property name="sqlSession" ref="sqlSession" />
+    </bean>
+
+    <bean id="spciSearchInfoService" class="com.samsunganycar.agency.common.service.impl.SPCISearchInfoServiceImpl">
+        <property name="sqlSession" ref="sqlSession" />
+    </bean>
+    
+    <bean id="spciBoardService" class="com.samsunganycar.agency.shanghai.service.impl.SPCIBoardServiceImpl">
+        <property name="sqlSession" ref="sqlSession" />
+    </bean>
+
+    <bean id="spciSHQuotationService" class="com.samsunganycar.agency.shanghai.service.impl.SPCIQuotationServiceImpl">
+        <property name="sqlSession" ref="sqlSession" />
+    </bean>
+
+    <bean id="spciQDQuotationService" class="com.samsunganycar.agency.qingdao.service.impl.SPCIQuotationServiceImpl">
+        <property name="sqlSession" ref="sqlSession" />
+    </bean>
+
+    <bean id="spciTJQuotationService" class="com.samsunganycar.agency.tianjin.service.impl.SPCIQuotationServiceImpl">
+        <property name="sqlSession" ref="sqlSession" />
+    </bean>
+
+    <bean id="spciSZQuotationService" class="com.samsunganycar.agency.shenzhen.service.impl.SPCIQuotationServiceImpl">
+        <property name="sqlSession" ref="sqlSession" />
+    </bean>
+
+    <bean id="spciSJQuotationService" class="com.samsunganycar.agency.suzhou.service.impl.SPCIQuotationServiceImpl">
+        <property name="sqlSession" ref="sqlSession" />
+    </bean>
+
+
+</beans>
