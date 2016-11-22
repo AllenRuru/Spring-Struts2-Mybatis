@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="spci-struts" extends="struts-default">
+        <interceptors>
+            <interceptor name="sessionOut" class="com.samsunganycar.util.EbusinessSessionInterceptor" />
+            <interceptor-stack name="session">
+                <interceptor-ref name="sessionOut" />
+                <interceptor-ref name="defaultStack" />
+                <interceptor-ref name="paramsPrepareParamsStack" />
+            </interceptor-stack>
+        </interceptors>
+
+        <default-interceptor-ref name="session" />
+        <global-results>
+            <result name="eBusinessRedirect" type="redirect">/index.jsp</result>
+            <!--<result name="error" type="redirect">/error/error.jsp</result>-->
+            <result name="error">/WEB-INF/view/common/error.jsp</result>
+        </global-results>
+    </package>
+
+    <package name="spci-json" extends="json-default">
+        <interceptors>
+            <interceptor name="sessionOut" class="com.samsunganycar.util.EbusinessSessionInterceptor" />
+            <interceptor-stack name="session">
+                <interceptor-ref name="sessionOut" />
+                <interceptor-ref name="defaultStack" />
+                <interceptor-ref name="paramsPrepareParamsStack" />
+            </interceptor-stack>
+        </interceptors>
+
+        <default-interceptor-ref name="session" />
+        <global-results>
+            <result name="eBusinessRedirect" type="redirect">/index.jsp</result>
+        </global-results>
+    </package>
+
+    <package name="user" extends="struts-default" namespace="/user">
+        <action name="login" class="com.samsunganycar.agency.LoginAction" method="login">
+            <result name="login">/WEB-INF/view/login/login.jsp</result>
+            <result name="success">/WEB-INF/view/main/main.jsp</result>
+        </action>
+        <action name="logOut" class="com.samsunganycar.agency.LoginAction" method="logOut">
+            <result name="login">/WEB-INF/view/login/login.jsp</result>
+        </action>
+    </package>
+
+    <package name="user_json" extends="json-default" namespace="/user">
+        <action name="loginProc" class="com.samsunganycar.agency.LoginAction" method="loginProc">
+            <result type="json" />
+        </action>
+        <action name="userQuery" class="com.samsunganycar.agency.LoginAction" method="userQuery">
+            <result type="json" />
+        </action>
+        <action name="userOrAgentQuery" class="com.samsunganycar.agency.LoginAction" method="userOrAgentQuery">
+            <result type="json" />
+        </action>
+        <action name="selectHandler" class="com.samsunganycar.agency.MainAction" method="selectHandler">
+            <result type="json" />
+        </action>
+        <action name="selectAgent" class="com.samsunganycar.agency.MainAction" method="selectAgent">
+            <result type="json" />
+        </action>
+        <action name="selectAgentHandler" class="com.samsunganycar.agency.MainAction" method="selectAgentHandler">
+            <result type="json" />
+        </action>
+    </package>
+
+    <package name="main" extends="spci-struts" namespace="/main">
+        <action name="main" class="com.samsunganycar.agency.MainAction" method="main">
+            <result name="login">/WEB-INF/view/login/login.jsp</result>
+            <result name="success">/WEB-INF/view/agency/main.jsp</result>
+        </action>
+    </package>
+
+    <package name="main_json" extends="json-default" namespace="/main">
+        <action name="vehicleName" class="com.samsunganycar.agency.MainAction" method="vehicleName">
+            <result type="json" />
+        </action>
+        <action name="engageList" class="com.samsunganycar.agency.MainAction" method="engageList">
+            <result type="json" />
+        </action>
+    </package>
+
+    <package name="menu01" extends="spci-struts" namespace="/menu/01">
+        <action name="main" class="com.samsunganycar.agency.SPCI01Action" method="main">
+            <result name="step1">/WEB-INF/view/agency/01/selectUser.jsp</result>
+            <!--<result name="success">/WEB-INF/view/agency/01/%{#session.sfTemporary.main.AREA_CODE}/proposal.jsp</result>-->
+            <result name="success">/WEB-INF/view/agency/01/commonTab.jsp</result>
+            <result name="login">/WEB-INF/view/login/login.jsp</result>
+        </action>
+        <action name="proposal" class="com.samsunganycar.agency.SPCI01Action" method="proposal">
+            <result name="success">/WEB-INF/view/agency/01/%{#session.sfTemporary.main.AREA_CODE}/proposal.jsp</result>
+        </action>
+        <action name="saveStep1" class="com.samsunganycar.agency.SPCI01Action" method="saveStep1">
+            <result name="success">/WEB-INF/view/agency/01/commonTab.jsp</result>
+        </action>
+    </package>
+
+    <package name="menu01_json" extends="spci-json" namespace="/menu/01">
+        <action name="calculateSH" class="com.samsunganycar.agency.SPCI01SHAction" method="calculate">
+            <result type="json" />
+        </action>
+        <action name="proposalSaveSH" class="com.samsunganycar.agency.SPCI01SHAction" method="proposalSave">
+            <result type="json" />
+        </action>
+        <action name="calculateQD" class="com.samsunganycar.agency.SPCI01QDAction" method="calculate">
+            <result type="json" />
+        </action>
+        <action name="proposalSaveQD" class="com.samsunganycar.agency.SPCI01QDAction" method="proposalSave">
+            <result type="json" />
+        </action>
+        <action name="queryPolicyQD" class="com.samsunganycar.agency.SPCI01QDAction" method="queryPolicy">
+            <result type="json" />
+        </action>
+        <action name="calculateTJ" class="com.samsunganycar.agency.SPCI01TJAction" method="calculate">
+            <result type="json" />
+        </action>
+        <action name="proposalSaveTJ" class="com.samsunganycar.agency.SPCI01TJAction" method="proposalSave">
+            <result type="json" />
+        </action>
+        <action name="queryPolicyTJ" class="com.samsunganycar.agency.SPCI01TJAction" method="queryPolicy">
+            <result type="json" />
+        </action>
+        <action name="calculateSZ" class="com.samsunganycar.agency.SPCI01SZAction" method="calculate">
+            <result type="json" />
+        </action>
+        <action name="proposalSaveSZ" class="com.samsunganycar.agency.SPCI01SZAction" method="proposalSave">
+            <result type="json" />
+        </action>
+        <action name="queryPolicySZ" class="com.samsunganycar.agency.SPCI01SZAction" method="queryPolicy">
+            <result type="json" />
+        </action>
+        <action name="calculateSJ" class="com.samsunganycar.agency.SPCI01SJAction" method="calculate">
+            <result type="json" />
+        </action>
+        <action name="proposalSaveSJ" class="com.samsunganycar.agency.SPCI01SJAction" method="proposalSave">
+            <result type="json" />
+        </action>
+        <action name="queryPolicySJ" class="com.samsunganycar.agency.SPCI01SJAction" method="queryPolicy">
+            <result type="json" />
+        </action>
+    </package>
+
+    <package name="menu02" extends="spci-struts" namespace="/menu/02">
+        <action name="main" class="com.samsunganycar.agency.SPCI02Action" method="main">
+            <result name="success">/WEB-INF/view/agency/02/main.jsp</result>
+        </action>
+
+        <action name="detail" class="com.samsunganycar.agency.SPCI02Action" method="detail">
+            <result name="success">/WEB-INF/view/agency/02/detail.jsp</result>
+        </action>
+    </package>
+
+    <package name="menu02_json" extends="spci-json" namespace="/menu/02">
+        <action name="search" class="com.samsunganycar.agency.SPCI02Action" method="search">
+            <result type="json" />
+        </action>
+    </package>
+
+    <package name="menu0301" extends="spci-struts" namespace="/menu/03/0301">
+        <action name="main" class="com.samsunganycar.agency.SPCI0301Action" method="main">
+            <result name="success">/WEB-INF/view/agency/03/0301/main.jsp</result>
+        </action>
+    </package>
+
+    <package name="menu0301_json" extends="spci-json" namespace="/menu/03/0301">
+        <action name="list" class="com.samsunganycar.agency.SPCI0301Action" method="list">
+            <result type="json" />
+        </action>
+    </package>
+    
+    <package name="menu0302" extends="spci-struts" namespace="/menu/03/0302">
+        <action name="main" class="com.samsunganycar.agency.SPCI0302Action" method="main">
+            <result name="success">/WEB-INF/view/agency/03/0302/main.jsp</result>
+        </action>
+    </package>
+
+    <package name="menu0302_json" extends="spci-json" namespace="/menu/03/0302">
+        <action name="list" class="com.samsunganycar.agency.SPCI0302Action" method="list">
+            <result type="json" />
+        </action>
+    </package>
+
+    <package name="menu04" extends="spci-struts" namespace="/menu/04">
+        <action name="main" class="com.samsunganycar.agency.SPCI04Action" method="main">
+            <result name="success">/WEB-INF/view/agency/04/main.jsp</result>
+        </action>
+    </package>
+
+    <package name="menu04_json" extends="spci-json" namespace="/menu/04">
+        <action name="list" class="com.samsunganycar.agency.SPCI04Action" method="list">
+            <result type="json" />
+        </action>
+        <action name="underwriteFlag" class="com.samsunganycar.agency.SPCI04Action" method="underwriteFlag">
+            <result type="json" />
+        </action>
+        <action name="applyFee" class="com.samsunganycar.agency.SPCI04Action" method="applyFee">
+            <result type="json" />
+        </action>
+        <action name="payCancel" class="com.samsunganycar.agency.SPCI04Action" method="payCancel">
+            <result type="json" />
+        </action>
+        <action name="payConfirm" class="com.samsunganycar.agency.SPCI04Action" method="payConfirm">
+            <result type="json" />
+        </action>
+        <action name="underwriteSubmit" class="com.samsunganycar.agency.SPCI04Action" method="underwriteSubmit">
+            <result type="json" />
+        </action>
+    </package>
+
+    <package name="menu05" extends="spci-struts" namespace="/menu/05">
+        <action name="main" class="com.samsunganycar.agency.SPCI05Action" method="main">
+            <result name="success">/WEB-INF/view/agency/05/main.jsp</result>
+        </action>
+    </package>
+
+    <package name="menu05_json" extends="spci-json" namespace="/menu/05">
+        <action name="list" class="com.samsunganycar.agency.SPCI05Action" method="list">
+            <result type="json" />
+        </action>
+        <action name="procRequestReceipt" class="com.samsunganycar.agency.SPCI05Action" method="procRequestReceipt">
+            <result type="json" />
+        </action>
+    </package>
+
+    <package name="menu07" extends="spci-struts" namespace="/menu/07">
+        <action name="main" class="com.samsunganycar.agency.SPCI07Action" method="main">
+            <result name="success">/WEB-INF/view/agency/07/main.jsp</result>
+        </action>
+        <action name="view" class="com.samsunganycar.agency.SPCI07Action" method="view">
+            <result name="success">/WEB-INF/view/agency/07/view.jsp</result>
+        </action>
+        <action name="write" class="com.samsunganycar.agency.SPCI07Action" method="write">
+            <result name="success">/WEB-INF/view/agency/07/write.jsp</result>
+        </action>
+        <action name="edit" class="com.samsunganycar.agency.SPCI07Action" method="edit">
+            <result name="success">/WEB-INF/view/agency/07/edit.jsp</result>
+        </action>
+        <action name="reply" class="com.samsunganycar.agency.SPCI07Action" method="reply">
+            <result name="success">/WEB-INF/view/agency/07/reply.jsp</result>
+        </action>
+    </package>
+
+    <package name="menu07_json" extends="spci-json" namespace="/menu/07">
+        <action name="list" class="com.samsunganycar.agency.SPCI07Action" method="list">
+            <result type="json" />
+        </action>
+        <action name="add" class="com.samsunganycar.agency.SPCI07Action" method="add">
+            <result type="json" />
+        </action>
+        <action name="update" class="com.samsunganycar.agency.SPCI07Action" method="update">
+            <result type="json" />
+        </action>
+        <action name="delete" class="com.samsunganycar.agency.SPCI07Action" method="delete">
+            <result type="json" />
+        </action>
+        <action name="replySave" class="com.samsunganycar.agency.SPCI07Action" method="replySave">
+            <result type="json" />
+        </action>
+        <action name="downloadFile" class="com.samsunganycar.agency.SPCI07Action" method="downloadFile">
+            <result type="json" />
+        </action>
+        <action name="deleteFile" class="com.samsunganycar.agency.SPCI07Action" method="deleteFile">
+            <result type="json" />
+        </action>
+    </package>
+
+    <package name="menu0901" extends="spci-struts" namespace="/menu/09/0901">
+        <action name="main" class="com.samsunganycar.agency.SPCI0901Action" method="main">
+            <result name="success">/WEB-INF/view/agency/09/0901/main.jsp</result>
+        </action>
+    </package>
+
+    <package name="menu0901_json" extends="spci-json" namespace="/menu/09/0901">
+        <action name="saveSetting" class="com.samsunganycar.agency.SPCI0901Action" method="saveSetting">
+            <result type="json" />
+        </action>
+        <action name="deleteSetting" class="com.samsunganycar.agency.SPCI0901Action" method="deleteSetting">
+            <result type="json" />
+        </action>
+    </package>
+
+    <package name="menu0902" extends="spci-struts" namespace="/menu/09/0902">
+        <action name="main" class="com.samsunganycar.agency.SPCI0902Action" method="main">
+            <result name="success">/WEB-INF/view/agency/09/0902/main.jsp</result>
+        </action>
+    </package>
+
+    <package name="menu0902_json" extends="spci-json" namespace="/menu/09/0902">
+        <action name="saveSetting" class="com.samsunganycar.agency.SPCI0902Action" method="saveSetting">
+            <result type="json" />
+        </action>
+        <action name="getSetting" class="com.samsunganycar.agency.SPCI0902Action" method="getSetting">
+            <result type="json" />
+        </action>
+        <action name="deleteSetting" class="com.samsunganycar.agency.SPCI0902Action" method="deleteSetting">
+            <result type="json" />
+        </action>
+    </package>
+
+    <package name="report" extends="spci-struts" namespace="/report">
+        <action name="rpt01" class="com.samsunganycar.agency.SPCIReportAction" method="rpt01">
+            <result name="success">/WEB-INF/view/agency/report/rpt01.jsp</result>
+        </action>
+        <action name="rpt02" class="com.samsunganycar.agency.SPCIReportAction" method="rpt02">
+            <result name="success">/WEB-INF/view/agency/report/rpt02.jsp</result>
+        </action>
+        <action name="rpt03" class="com.samsunganycar.agency.SPCIReportAction" method="rpt03">
+            <result name="success">/WEB-INF/view/agency/report/rpt03.jsp</result>
+        </action>
+        <action name="rpt04" class="com.samsunganycar.agency.SPCIReportAction" method="rpt04">
+            <result name="success">/WEB-INF/view/agency/report/rpt04.jsp</result>
+        </action>
+        <action name="rpt06" class="com.samsunganycar.agency.SPCIReportAction" method="rpt06">
+            <result name="success">/WEB-INF/view/agency/report/rpt06.jsp</result>
+        </action>
+        <action name="rpt07" class="com.samsunganycar.agency.SPCIReportAction" method="rpt07">
+            <result name="success">/WEB-INF/view/agency/report/rpt07.jsp</result>
+        </action>
+        <action name="rpt08" class="com.samsunganycar.agency.SPCIReportAction" method="rpt08">
+            <result name="success">/WEB-INF/view/agency/report/rpt08.jsp</result>
+        </action>
+        <action name="rpt09" class="com.samsunganycar.agency.SPCIReportAction" method="rpt09">
+            <result name="success">/WEB-INF/view/agency/report/rpt09.jsp</result>
+        </action>
+        <action name="rpt10" class="com.samsunganycar.agency.SPCIReportAction" method="rpt10">
+            <result name="success">/WEB-INF/view/agency/report/rpt10.jsp</result>
+        </action>
+    </package>
+
+    <package name="upload_json" extends="spci-json" namespace="/upload">
+        <action name="proposalImage" class="com.samsunganycar.agency.UpDownAction" method="proposalImage">
+            <interceptor-ref name="fileUploadStack"/>
+            <result type="json" />
+        </action>
+        <action name="downProposalImage" class="com.samsunganycar.agency.UpDownAction" method="downProposalImage">
+            <result type="json" />
+        </action>
+    </package>
+
+
+
+
+</struts>
