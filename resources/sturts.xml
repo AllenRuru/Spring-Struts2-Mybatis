@@ -3,7 +3,6 @@
 
 <struts>
 	<constant name="struts.objectFactory" value="org.apache.struts2.spring.StrutsSpringObjectFactory" />
-
     <constant name="struts.ui.theme" value="simple" />
     <constant name="struts.locale" value="zh_CN" />
     <constant name="struts.action.extension" value="do" />
