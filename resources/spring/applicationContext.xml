@@ -32,45 +32,13 @@
 
     <tx:annotation-driven transaction-manager="transactionManager" />
 
-    <bean name="cmLoader" class="com.samsunganycar.util.CMStaticContentLoader" />
+    <bean name="cmLoader" class="com.cc.util.CMStaticContentLoader" />
 
-    <bean id="spciCacheService" class="com.samsunganycar.agency.common.service.impl.SPCICacheServiceImpl">
+    <bean id="spciCacheService" class="com.cc.agency.common.service.impl.SPCICacheServiceImpl">
         <property name="sqlSession" ref="sqlSession" />
     </bean>
 
-    <bean id="spciUserService" class="com.samsunganycar.agency.common.service.impl.SPCIUserServiceImpl">
-        <property name="sqlSession" ref="sqlSession" />
-    </bean>
-
-    <bean id="spciCommonService" class="com.samsunganycar.agency.common.service.impl.SPCICommonServiceImpl">
-        <property name="sqlSession" ref="sqlSession" />
-    </bean>
-
-    <bean id="spciSearchInfoService" class="com.samsunganycar.agency.common.service.impl.SPCISearchInfoServiceImpl">
-        <property name="sqlSession" ref="sqlSession" />
-    </bean>
-    
-    <bean id="spciBoardService" class="com.samsunganycar.agency.shanghai.service.impl.SPCIBoardServiceImpl">
-        <property name="sqlSession" ref="sqlSession" />
-    </bean>
-
-    <bean id="spciSHQuotationService" class="com.samsunganycar.agency.shanghai.service.impl.SPCIQuotationServiceImpl">
-        <property name="sqlSession" ref="sqlSession" />
-    </bean>
-
-    <bean id="spciQDQuotationService" class="com.samsunganycar.agency.qingdao.service.impl.SPCIQuotationServiceImpl">
-        <property name="sqlSession" ref="sqlSession" />
-    </bean>
-
-    <bean id="spciTJQuotationService" class="com.samsunganycar.agency.tianjin.service.impl.SPCIQuotationServiceImpl">
-        <property name="sqlSession" ref="sqlSession" />
-    </bean>
-
-    <bean id="spciSZQuotationService" class="com.samsunganycar.agency.shenzhen.service.impl.SPCIQuotationServiceImpl">
-        <property name="sqlSession" ref="sqlSession" />
-    </bean>
-
-    <bean id="spciSJQuotationService" class="com.samsunganycar.agency.suzhou.service.impl.SPCIQuotationServiceImpl">
+    <bean id="spciUserService" class="com.cc.agency.common.service.impl.SPCIUserServiceImpl">
         <property name="sqlSession" ref="sqlSession" />
     </bean>
 
