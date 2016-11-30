@@ -1,0 +1,828 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<!-- 普通struts提交的拦截器 -->
+	<package name="eb-struts" extends="struts-default">
+		<!-- 拦截器 -->
+		<interceptors>
+			<interceptor name="sessionOut" class="com.sinosoft.ebusiness.util.EbusinessSessionInterceptor" />
+			<interceptor-stack name="session">
+				<interceptor-ref name="sessionOut" />
+				<interceptor-ref name="defaultStack" />
+				<interceptor-ref name="paramsPrepareParamsStack" />
+			</interceptor-stack>
+		</interceptors>
+
+		<default-interceptor-ref name="session" />
+
+		<!-- 全局变量 -->
+		<global-results>
+			<!-- 当session超时的时候转到快速报价页面 -->
+			<result name="eBusinessRedirect" type="redirect">/web/index.jsp</result>
+		</global-results>
+	</package>
+
+	<!-- json请求的拦截器 -->
+	<package name="eb-json" extends="json-default">
+		<!-- 拦截器 -->
+		<interceptors>
+			<interceptor name="sessionOut" class="com.sinosoft.ebusiness.util.EbusinessSessionInterceptor" />
+			<interceptor-stack name="session">
+				<interceptor-ref name="sessionOut" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+
+		<default-interceptor-ref name="session" />
+		<!-- 全局变量 -->
+			<!-- 当session超时的时候转到快速报价页面 -->
+		<global-results>
+			<result name="eBusinessRedirect" type="redirect">/index.jsp</result>
+		</global-results>
+	</package>
+
+    <!-- 外部进来的拦截器 -->
+    <package name="external-struts" extends="struts-default">
+        <!-- 拦截器 -->
+        <interceptors>
+            <interceptor name="sessionLogin" class="com.sinosoft.ebusiness.util.EbusinessLoginInterceptor" />
+            <interceptor name="sessionOut" class="com.sinosoft.ebusiness.util.EbusinessSessionInterceptor" />
+            <interceptor-stack name="session">
+                <interceptor-ref name="sessionLogin"/>
+                <interceptor-ref name="sessionOut" />
+                <interceptor-ref name="defaultStack" />
+                <interceptor-ref name="paramsPrepareParamsStack" />
+            </interceptor-stack>
+        </interceptors>
+
+        <default-interceptor-ref name="session" />
+
+        <!-- 全局变量 -->
+        <global-results>
+            <!-- 当session超时的时候转到快速报价页面 -->
+            <result name="eBusinessRedirect" type="redirect">/web/index.jsp</result>
+        </global-results>
+    </package>
+
+	<!-- 网销入口 -->
+	<package name="ebusiness" extends="struts-default" namespace="/ebusiness/login">
+		<action name="ebLogin" class="com.sinosoft.ebusiness.spci.home.web.LoginAction" method="login">
+			<!-- 登录从快速报价开始 -->
+			<result name="success" type="redirect">/home/reception.do?area.areacode=${#request.area.areacode}</result>
+			<!-- 进入基本信息录入 -->
+			<result name="basicinfo" type="redirect">/external/basicinfo.do</result>
+			<!-- 进入快速报价 -->
+			<result name="quickquotation" type="redirect">/quickquote/initMain.do?area.areacode=021</result>
+			<!-- 进入投保洽谈 -->
+			<result name="proposaltalk" type="redirect">/external/proposaltalk.do</result>
+			<!-- 进入保费计算 -->
+			<result name="premium" type="redirect">/external/premium.do</result>
+			<!-- 进入邮件模块 -->
+			<result name="mailtoadmin" type="redirect">/external/mailtoadmin.do</result>
+			<!-- 新浪微博入口 +hilton-->
+			<result name="sinaWeibo" type="redirect">/sinaWeibo/autoInsuranceQuoteInit.do?weiboCid=${#request.weiboCid}&amp;weiboViewer=${#request.weiboViewer}&amp;weiboSubAppkey=${#request.weiboSubAppkey}&amp;weiboAccessToken=${#request.weiboAccessToken}</result>
+            <!-- 续保专用通道 -->
+		    <result name="renewal" type="redirect">
+                <param name="location">/renewal/init.do?licenseno=${licenseno}&amp;number=${number}&amp;keyid=${keyid}</param>
+                <param name="encode">true</param>
+            </result>
+        </action>
+	</package>
+
+	<!-- 从外部进来的请求 -->
+	<package name="external" extends="external-struts" namespace="/external">
+		<!-- 进入基本信息录入 -->
+		<action name="basicinfo" class="com.sinosoft.ebusiness.spci.home.web.ExternalAction" method="basicInfo">
+			<result name="success">/WEB-INF/view/precisequote/main.jsp</result>
+            <result name="construction">/WEB-INF/view/error/construction.jsp</result>
+		</action>
+
+		<!-- 进入投保洽谈 -->
+		<action name="proposaltalk" class="com.sinosoft.ebusiness.spci.home.web.ExternalAction" method="proposalTalk">
+            <result name="success">/WEB-INF/view/precisequote/main.jsp</result>
+            <result name="construction">/WEB-INF/view/error/construction.jsp</result>
+		</action>
+
+		<!-- 进入保费计算 -->
+		<action name="premium" class="com.sinosoft.ebusiness.spci.home.web.ExternalAction" method="premium">
+            <result name="success">/WEB-INF/view/precisequote/main.jsp</result>
+            <result name="construction">/WEB-INF/view/error/construction.jsp</result>
+		</action>
+
+		<!-- 进入邮件模块 -->
+		<action name="mailtoadmin" class="com.sinosoft.ebusiness.spci.home.web.ExternalAction" method="mailToAdmin">
+            <result name="success">/WEB-INF/view/precisequote/mailSuccess.jsp</result>
+		</action>
+	</package>
+
+	<!-- 快速报价 -->
+	<package name="quickquote" extends="eb-struts" namespace="/quickquote">
+		<!-- 主页面 -->
+		<action name="init" class="com.sinosoft.ebusiness.spci.common.InitAction" method="init">
+			<result name="success">/WEB-INF/view/login/mainweb.jsp</result>
+		</action>
+
+		<!-- 快速报价init -->
+		<action name="initMain" class="com.sinosoft.ebusiness.spci.common.InitAction" method="init">
+			<result name="success">/WEB-INF/view/quickquote/quickQuote/quickQuote.jsp</result>
+		</action>
+
+		<action name="step4pdfDownload" class="com.sinosoft.ebusiness.spci.precisequote.PreciseQuote4Action" method="step4pdfDownload">
+            <result name="success" type="stream">
+                <param name="contentType">application/octet-stream;charset=UTF-8</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">attachment;filename="${downloadFileName}"</param>
+                <param name="bufferSize">1024</param>
+            </result>
+        </action>
+	</package>
+
+	<!-- 主页信息 -->
+	<package name="home" extends="struts-default" namespace="/home">
+		<action name="ipaddress" class="com.sinosoft.ebusiness.spci.home.web.IpAddressAction" method="list">
+			<result name="success">/WEB-INF/view/home/home.jsp</result>
+		</action>
+
+		<action name="reception" class="com.sinosoft.ebusiness.spci.home.web.ReceptionAction" method="decision">
+			<result name="success">/WEB-INF/view/home/reception.jsp</result>
+			<result name="error">/WEB-INF/view/home/construct.jsp</result>
+		</action>
+
+		<action name="keyIdForward" class="com.sinosoft.ebusiness.spci.home.web.ReceptionAction" method="keyIdForward"></action>
+
+        <action name="cityAddress" class="com.sinosoft.ebusiness.spci.home.web.CityAction" method="postCodeCityById">
+	       <result name="success">/WEB-INF/view/precisequote/main.jsp</result>
+		</action>
+
+		<action name="city" class="com.sinosoft.ebusiness.spci.home.web.CityAction" method="list"></action>
+
+		<action name="confirm" class="com.sinosoft.ebusiness.spci.home.web.CityAction" method="confirm"></action>
+	</package>
+
+	<package name="quickquoteJson" extends="eb-json" namespace="/quickquoteJson">
+		<!-- 快速报价费率查询init -->
+		<action name="findRateByArea" class="com.sinosoft.ebusiness.spci.quickquote.QuickQuoteAction" method="findRateByArea">
+			<result type="json" />
+		</action>
+		<!-- 精确报价费游标数据init -->
+		<action name="findCursorList" class="com.sinosoft.ebusiness.spci.precisequote.PreciseQuote4Action" method="findCursorList">
+			<result type="json" />
+		</action>
+		<action name="progress" class="com.sinosoft.ebusiness.spci.home.web.ReceptionAction" method="progressYN">
+			<result type="json" />
+		</action>
+        <action name="visitInfo" class="com.sinosoft.ebusiness.spci.home.web.ReceptionAction" method="visitInfo">
+            <result type="json" />
+        </action>
+
+	</package>
+	
+	<!-- 新浪微博相关 +hilton -->
+	<package name="sinaWeibo" extends="json-default" namespace="/sinaWeibo">
+
+		<!-- 全局变量 -->
+		<global-results>
+			<result name="authorize" type="redirect">
+				http://e.weibo.com/${#request.cid}/app_388269206
+				<!-- http://e.weibo.com/2960317105/app_388269206?previev=1 -->
+			</result>
+		</global-results>
+		
+		<!-- 初始化 -->
+		<action name="autoInsuranceQuoteInit" class="com.sinosoft.ebusiness.spci.weibo.SinaWeiboAutoInsuranceQuoteAction" method="autoInsuranceQuoteInit">
+			<result name="success">/WEB-INF/view/weibo/sina/autoInsuranceQuote.jsp</result>
+		</action>
+		
+		<!-- 授权authorize -->
+		<action name="authorize" class="com.sinosoft.ebusiness.spci.weibo.SinaWeiboAutoInsuranceQuoteAction" method="authorize">
+			<result name="reAuthorize">/shouquan.jsp</result>
+		</action>
+		
+		<!-- 保存 -->
+		<action name="save" class="com.sinosoft.ebusiness.spci.weibo.SinaWeiboAutoInsuranceQuoteAction" method="saveWeiboForm">
+			<result type="json" />
+		</action>
+		
+		<!-- 网销系统(web)Step1-初始化 -->
+		<action name="quoteWebInit" class="com.sinosoft.ebusiness.spci.weibo.SinaWeiboAutoInsuranceQuoteAction" method="autoInsuranceQuoteWebInit">
+			<result name="autoInsuranceQuoteWebInit">/WEB-INF/view/precisequote/main.jsp</result>
+		</action>
+	</package>
+
+	<!-- 基本信息录入 -->
+	<package name="basicinfo" extends="eb-json" namespace="/basicinfo">
+		<interceptors>
+			<interceptor name="outLogin" class="com.sinosoft.ebusiness.util.EbusinessLoginInterceptor" />
+			<interceptor-stack name="sessionLogin">
+				<interceptor-ref name="outLogin" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+
+		<!-- 全局变量 -->
+		<global-results>
+			<!-- 当session超时的时候转到快速报价页面 -->
+			<result name="eBusinessRedirect" type="redirect">/index.jsp</result>
+		</global-results>
+
+		<!-- 初始化 -->
+		<action name="init" class="com.sinosoft.ebusiness.spci.precisequote.BasicInfoAction" method="init">
+			<result name="success">/WEB-INF/view/precisequote/main.jsp</result>
+			<result name="construction">/WEB-INF/view/error/construction.jsp</result>
+		</action>
+		
+		<action name="initLanding" class="com.sinosoft.ebusiness.spci.precisequote.BasicInfoAction" method="initLanding">
+			<result name="success">/WEB-INF/view/precisequote/main.jsp</result>
+            <result name="construction">/WEB-INF/view/error/construction.jsp</result>
+		</action>
+
+        <action name="initTM" class="com.sinosoft.ebusiness.spci.precisequote.BasicInfoAction" method="initTM">
+            <result name="success">/WEB-INF/view/precisequote_tm/main.jsp</result>
+            <result name="construction">/WEB-INF/view/error/construction.jsp</result>
+        </action>
+		
+		<action name="sendValidPhoneCode" class="com.sinosoft.ebusiness.spci.precisequote.BasicInfoAction" method="sendValidPhoneCode">
+			<result type="json" />	
+		</action>
+		
+		<action name="checkValidPhoneCode" class="com.sinosoft.ebusiness.spci.precisequote.BasicInfoAction" method="checkValidPhoneCode">
+			<result type="json" />	
+		</action>
+
+		<!-- 校验 -->
+		<action name="confirm20160802" class="com.sinosoft.ebusiness.spci.precisequote.BasicInfoAction" method="confirm">
+			<result type="json" />
+		</action>
+
+		<!-- 保存 -->
+		<action name="save20160802" class="com.sinosoft.ebusiness.spci.precisequote.BasicInfoAction" method="save">
+			<result type="json" />
+		</action>
+
+		<!-- 查询 -->
+		<action name="search" class="com.sinosoft.ebusiness.spci.precisequote.BasicInfoAction" method="search">
+			<result type="json" />
+		</action>
+
+		<action name="set_1To4Data" class="com.sinosoft.ebusiness.spci.precisequote.BasicInfoAction" method="set_1To4Data">
+			<result type="json" />
+		</action>
+
+		<!-- 从外部进入精确报价 -->
+		<action name="initReLoad" class="com.sinosoft.ebusiness.spci.precisequote.BasicInfoAction" method="initReLoad">
+			<interceptor-ref name="sessionLogin" />
+			<result name="success">/WEB-INF/view/precisequote/main.jsp</result>
+            <result name="construction">/WEB-INF/view/error/construction.jsp</result>
+		</action>
+
+        <action name="wechatpopup" class="com.sinosoft.ebusiness.spci.precisequote.BasicInfoAction" method="wechatpopup">
+            <result name="success">/WEB-INF/view/precisequote/wechatPopup.jsp</result>
+        </action>
+		
+	</package>
+
+	<!-- 车辆信息录入 -->
+	<package name="carinfo" extends="eb-json" namespace="/carinfo">
+		<!-- 初始化 -->
+		<action name="init" class="com.sinosoft.ebusiness.spci.precisequote.CarInfoAction" method="init">
+			<result type="json" />
+		</action>
+
+		<!-- 校验 -->
+		<action name="confirm" class="com.sinosoft.ebusiness.spci.precisequote.CarInfoAction" method="confirm">
+			<result type="json" />
+		</action>
+
+		<!-- 保存 -->
+		<action name="save" class="com.sinosoft.ebusiness.spci.precisequote.CarInfoAction" method="save">
+			<result type="json" />
+		</action>
+
+		<!-- 查询 -->
+		<action name="search" class="com.sinosoft.ebusiness.spci.precisequote.CarInfoAction" method="search">
+			<result type="json" />
+		</action>
+	</package>
+
+	<!-- 保险期间和优惠系数的保存操作 -->
+	<package name="insureperiodAction" extends="eb-json" namespace="/insureperiodAction">
+		<!-- 保险期间和优惠系数初始值查询init -->
+	    <action name="findPeriodAndDiscount" class="com.sinosoft.ebusiness.spci.precisequote.InsurancePeriodAction" method="findPeriodAndDiscount">
+			<result type="json" />
+		</action>
+
+		<!-- 回显或者后退时调用的方法 -->
+	    <action name="backShowFind" class="com.sinosoft.ebusiness.spci.precisequote.InsurancePeriodAction" method="backShowFind">
+			<result type="json" />
+		</action>
+
+		<!-- 保险期间和优惠系数当鼠标点击radio时，返回对应的系数 -->
+		<action name="findSelectedDiscount" class="com.sinosoft.ebusiness.spci.precisequote.InsurancePeriodAction" method="findSelectedDiscount">
+			<result type="json" />
+		</action>
+
+		<!-- 保险期间和优惠系数 确定按钮操作-->
+		<action name="confirmOperator" class="com.sinosoft.ebusiness.spci.precisequote.InsurancePeriodAction" method="confirmOperator">
+			<result type="json" />
+		</action>
+
+		<action name="nextCheck" class="com.sinosoft.ebusiness.spci.precisequote.InsurancePeriodAction" method="nextCheck">
+			<result type="json" />
+		</action>
+
+		<!-- 保险期间和优惠系数  下一步按钮操作 -->
+		<action name="nextSave" class="com.sinosoft.ebusiness.spci.precisequote.InsurancePeriodAction" method="nextSave">
+			<result type="json" />
+		</action>
+
+		<!-- 重新进行投保查询 -->
+		<action name="proposalQuery" class="com.sinosoft.ebusiness.spci.precisequote.InsurancePeriodAction" method="proposalQuery">
+			<result type="json" />
+		</action>
+
+		<!-- 重新进行保险期间查询 -->
+		<action name="reCheckInsurancePeriod" class="com.sinosoft.ebusiness.spci.precisequote.InsurancePeriodAction" method="reCheckInsurancePeriod">
+			<result type="json" />
+		</action>
+	</package>
+
+	<!-- 保费计算结果 begin-->
+	<package name="step4" extends="eb-json" namespace="/step4">
+		<!-- 保费计算结果  下一步按钮操作 -->
+		<action name="saveStep4" class="com.sinosoft.ebusiness.spci.precisequote.PreciseQuote4Action" method="saveStep4Data">
+			<result type="json" />
+		</action>
+        <action name="calculate" class="com.sinosoft.ebusiness.spci.precisequote.PreciseQuote4Action" method="calculate">
+            <result type="json" />
+        </action>
+		<!-- 保费计算 车险数据处理 -->
+        <action name="findStep4CxDate" class="com.sinosoft.ebusiness.spci.precisequote.PreciseQuote4Action" method="findStep4CxDate">
+            <result type="json" />
+        </action>
+        <!-- 保费计算 附加险数据加载 -->
+        <action name="findStep4FjDate" class="com.sinosoft.ebusiness.spci.precisequote.PreciseQuote4Action" method="kindDataLoadForFj">
+            <result type="json" />
+        </action>
+        <!-- 保费计算 不计免赔数据加载 -->
+        <action name="findStep4BjDate" class="com.sinosoft.ebusiness.spci.precisequote.PreciseQuote4Action" method="kindDataLoadForBj">
+            <result type="json" />
+        </action>
+
+        <!-- 保费计算 新增加设备保费计算 -->
+        <action name="findStep4MachineDate" class="com.sinosoft.ebusiness.spci.precisequote.PreciseQuote4Action" method="findStep4MachinDate">
+            <result type="json" />
+        </action>
+
+        <!-- 保费计算 自动注册会员 -->
+        <action name="autoCreatMember" class="com.sinosoft.ebusiness.spci.precisequote.PreciseQuote4Action" method="autoCreatMemberId">
+            <result type="json" />
+        </action>
+        <action name="findStep4AllData" class="com.sinosoft.ebusiness.spci.precisequote.PreciseQuote4Action" method="findStep4AllData">
+            <result type="json" />
+        </action>
+	</package>
+	<!-- 保费计算结果 end-->
+
+	<!-- 投保信息录入 -->
+	<package name="information" extends="eb-json" namespace="/information">
+		<action name="mailAddress" class="com.sinosoft.ebusiness.spci.precisequote.InformationAction" method="mailAddressList">
+			<result type="json" />
+		</action>
+
+		<action name="searchPostCode" class="com.sinosoft.ebusiness.spci.home.web.CityAction" method="postCodeCity">
+			<result type="json" />
+		</action>
+
+		<!-- 通过省份查找市和区 -->
+		<action name="searchCityAndArea" class="com.sinosoft.ebusiness.spci.precisequote.InformationAction" method="searchCityAndArea">
+			<result type="json" />
+		</action>
+		<!-- 保存 -->
+		<action name="save" class="com.sinosoft.ebusiness.spci.precisequote.InformationAction" method="save">
+			<result type="json" />
+		</action>
+
+		<action name="init" class="com.sinosoft.ebusiness.spci.precisequote.InformationAction" method="init">
+			<result type="json" />
+		</action>
+
+		<!-- 回显时从数据库中读取投保人和被保险人相关数据 -->
+		<action name="selDataFromDB" class="com.sinosoft.ebusiness.spci.precisequote.InformationAction" method="selDataFromDB">
+			<result type="json" />
+		</action>
+
+		<action name="baseInitStatic" class="com.sinosoft.ebusiness.spci.common.BaseAction" method="baseInitStatic">
+			<result type="json" />
+		</action>
+		<action name="parkingSMS" class="com.sinosoft.ebusiness.spci.precisequote.InformationAction" method="parkingSMS">
+			<result type="json" />
+		</action>
+
+        <action name="proposalTMPayment" class="com.sinosoft.ebusiness.spci.precisequote.InformationAction" method="proposalTMPayment">
+            <result type="json" />
+        </action>
+
+	</package>
+
+	<!-- 投保内容确认 -->
+	<package name="Confrim" extends="eb-json" namespace="/Confrim">
+		<action name="save" class="com.sinosoft.ebusiness.spci.precisequote.ConfrimAction" method="save">
+			<result type="json" />
+		</action>
+
+		<action name="init" class="com.sinosoft.ebusiness.spci.precisequote.ConfrimAction" method="init">
+			<result type="json" />
+		</action>
+
+        <action name="initTM" class="com.sinosoft.ebusiness.spci.precisequote.ConfrimAction" method="initTM">
+            <result type="json" />
+        </action>
+	</package>
+
+	<!-- 保费支付 -->
+	<package name="premiumPaymentAction" extends="eb-json" namespace="/premiumPaymentAction">
+		<!-- 保费支付页面初始化数据读取方法 -->
+	    <action name="searchOrderAndPaymentInfo" class="com.sinosoft.ebusiness.spci.precisequote.PremiumPaymentAction" method="searchOrderAndPaymentInfo">
+			<result type="json" />
+		</action>
+
+		<!-- 调用快钱接口 -->
+		<action name="callBillPay" class="com.sinosoft.ebusiness.spci.precisequote.PremiumPaymentAction" method="callBillPay">
+			<result type="json" />
+		</action>
+
+		<!-- 快钱支付成功后返回确认信息 -->
+	    <action name="showAfterBill" class="com.sinosoft.ebusiness.spci.precisequote.PremiumPaymentAction" method="showAfterBill">
+			<result type="json" />
+		</action>
+		<!-- 为电销服务的快钱支付 -->
+        <action name="payForTm" class="com.sinosoft.ebusiness.spci.electronic.PaymentForTmAction" method="pay">
+            <result type="json"/>
+        </action>
+
+        <action name="showAfterTMBill" class="com.sinosoft.ebusiness.spci.precisequote.PremiumPaymentAction" method="showAfterTMBill">
+            <result type="json" />
+        </action>
+
+        <action name="setTMOrderAndPaymentInfo" class="com.sinosoft.ebusiness.spci.precisequote.PremiumPaymentAction" method="setTMOrderAndPaymentInfo">
+            <result type="json" />
+        </action>
+
+        <action name="callTMBillPay" class="com.sinosoft.ebusiness.spci.precisequote.PremiumPaymentAction" method="callTMBillPay">
+            <result type="json" />
+        </action>
+        
+		<!-- 调用快钱接口 手机用 -->
+		<action name="callMBBillPay" class="com.sinosoft.ebusiness.spci.precisequote.PremiumPaymentAction" method="callMBBillPay">
+			<result type="json" />
+		</action>        
+        
+		<!-- 快钱支付成功后返回确认信息 手机用 -->
+	    <action name="showAfterMBBill" class="com.sinosoft.ebusiness.spci.precisequote.PremiumPaymentAction" method="showAfterMBBill">
+			<result type="json" />
+		</action>
+        
+		<action name="showMBOrderConfirm" class="com.sinosoft.ebusiness.spci.precisequote.PremiumPaymentAction" method="showMBOrderConfirm">
+			<result type="json" />
+		</action>
+
+        <!--银联支付-->
+        <action name="callUnionPay" class="com.sinosoft.ebusiness.spci.precisequote.UnionPaymentAction" method="callBillPay">
+            <result type="json" />
+        </action>
+
+        <action name="callTMUnionPay" class="com.sinosoft.ebusiness.spci.precisequote.UnionPaymentAction" method="callTMUnionPay">
+            <result type="json" />
+        </action>
+
+        <!--银联查询-->
+        <action name="unionQuery" class="com.sinosoft.ebusiness.spci.precisequote.UnionPaymentAction" method="queryTransaction">
+            <result type="json" />
+        </action>
+
+        <action name="callOffLinePay" class="com.sinosoft.ebusiness.spci.precisequote.OffLinePaymentAction" method="callOffLinePay">
+            <result type="json" />
+        </action>
+
+        <action name="callOffLinePayByTrackingSystem" class="com.sinosoft.ebusiness.spci.precisequote.OffLinePaymentAction" method="callOffLinePayByTrackingSystem">
+            <result type="json" />
+        </action>
+
+        <action name="afterBillOffLinePay" class="com.sinosoft.ebusiness.spci.precisequote.OffLinePaymentAction" method="afterBillOffLinePay">
+            <result type="json" />
+        </action>
+	</package>
+
+	<!-- 发送电销 -->
+	<package name="electronic" extends="json-default" namespace="/electronic">
+		<!-- 投保洽谈 -->
+		<action name="sendTalkIMTM" class="com.sinosoft.ebusiness.spci.electronic.ProposalTalkAction" method="send">
+			<result type="json" />
+		</action>
+        <action name="sendTalkIMTMExceptCheckCode" class="com.sinosoft.ebusiness.spci.electronic.ProposalTalkAction" method="sendExceptCheckCode">
+            <result type="json" />
+        </action>
+		
+		<!-- 7月活动 投保洽谈保存到MKPR02TB -->
+		<action name="saveTalkMkpr02" class="com.sinosoft.ebusiness.spci.electronic.ProposalTalkAction" method="saveTalkMkpr02">
+			<result type="json" />
+		</action>
+		
+		<!-- 商业险提前期到期 -->
+		<action name="sendExpire" class="com.sinosoft.ebusiness.spci.electronic.BusinessExpireAction" method="send">
+			<result type="json" />
+		</action>
+		<action name="consultForOtherProvince" class="com.sinosoft.ebusiness.spci.electronic.ProposalTalkAction" method="consultForOtherProvince">
+			<result type="json" />
+		</action>
+		<!-- 和平台交互错误 -->
+		<action name="saveSms" class="com.sinosoft.ebusiness.spci.electronic.PlatformExceptionAction" method="save">
+			<result type="json" />
+		</action>
+        <!-- 非规定浏览器 发送投保洽谈 -->
+        <action name="browserSendTalk" class="com.sinosoft.ebusiness.spci.electronic.ProposalTalkAction" method="browserSendTalk">
+            <result type="json" />
+        </action>		
+	</package>
+
+	<!-- 最近保费记录 -->
+	<package name="premiumrecord" extends="eb-json" namespace="/premiumrecord">
+		<!-- 检查是否登录 -->
+		<action name="checkLogin" class="com.sinosoft.ebusiness.spci.precisequote.PremiumRecordAction" method="checkLogin">
+			<result type="json" />
+		</action>
+		<!-- 登录 -->
+		<action name="login" class="com.sinosoft.ebusiness.spci.precisequote.PremiumRecordAction" method="login">
+			<result type="json" />
+		</action>
+		<!-- 获得保费记录 -->
+		<action name="requestKindList" class="com.sinosoft.ebusiness.spci.precisequote.PremiumRecordAction" method="requestKindList">
+			<result type="json" />
+		</action>
+		<!-- 从基本信息转向报废计算，并加载数据 -->
+		<action name="reLoadBasic2Premium" class="com.sinosoft.ebusiness.spci.precisequote.PremiumRecordAction" method="reLoadBasic2Premium">
+			<result type="json" />
+		</action>
+        <action name="loginOut" class="com.sinosoft.ebusiness.spci.precisequote.PremiumRecordAction" method="loginOut">
+            <result type="json" />
+        </action>		
+	</package>
+
+	<!--调用快钱   快钱支付成功后返回确认信息  -->
+	<package name="billpay" extends="struts-default" namespace="/billpay">
+		<action name="billOutParam" class="com.sinosoft.ebusiness.spci.precisequote.PremiumPaymentAction" method="billOutParam">
+		    <result name="success">
+				/WEB-INF/view/billreceive/receive.jsp
+			</result>
+		</action>
+
+        <action name="billOutTMParam" class="com.sinosoft.ebusiness.spci.precisequote.PremiumPaymentAction" method="billOutTMParam">
+            <result name="success">
+                /WEB-INF/view/billreceive/receive.jsp
+            </result>
+        </action>
+        
+        <action name="billOutMBParam" class="com.sinosoft.ebusiness.spci.precisequote.PremiumPaymentAction" method="billOutMBParam">
+            <result name="success">
+                /WEB-INF/view/billreceive/receive.jsp
+            </result>
+        </action>               
+        
+		<action name="showOrderConfirm" class="com.sinosoft.ebusiness.spci.precisequote.PremiumPaymentAction" method="showOrderConfirm">
+			<result name="success">
+				/WEB-INF/view/billreceive/showAfterBill.jsp
+			</result>
+		</action>
+
+        <action name="showTMOrderConfirm" class="com.sinosoft.ebusiness.spci.precisequote.PremiumPaymentAction" method="showTMOrderConfirm">
+            <result name="success">
+                /WEB-INF/view/billreceive/showAfterBill.jsp
+            </result>
+        </action>
+        
+	   <action name="callBackAfterBill" class="com.sinosoft.ebusiness.spci.precisequote.PremiumPaymentAction" method="callBackAfterBill">
+	     	<result name="success">
+	     		/WEB-INF/view/billreceive/showAfterBill.jsp
+	     	</result>
+		</action>
+
+        <!-- 为电销系统服务的快钱支付-->
+        <action name="payTmInit" class="com.sinosoft.ebusiness.spci.electronic.PaymentForTmAction" method="payInit">
+            <result name="success">
+                /WEB-INF/view/billreceive/payForTm.jsp
+            </result>
+        </action>
+        <!-- 为电销系统服务的快钱回调-->
+        <action name="callBackAfterTMBill" class="com.sinosoft.ebusiness.spci.precisequote.PremiumPaymentAction" method="callBackAfterTMBill">
+            <result name="success">
+                /WEB-INF/view/billreceive/showAfterBill.jsp
+            </result>
+        </action>
+
+	</package>
+
+    <!--银联支付的回调-->
+    <package name="unionpay" extends="struts-default" namespace="/unionpay">
+        <action name="payReceive" class="com.sinosoft.ebusiness.spci.precisequote.UnionPaymentAction" method="payReceive">
+            <result name="success">
+                /WEB-INF/view/billreceive/showAfterBill.jsp
+            </result>
+        </action>
+
+        <action name="payTMReceive" class="com.sinosoft.ebusiness.spci.precisequote.UnionPaymentAction" method="payTMReceive">
+            <result name="success">
+                /WEB-INF/view/billreceive/showAfterBill.jsp
+            </result>
+        </action>
+    </package>
+
+    <!--支付宝支付的回调-->
+    <package name="alipay" extends="eb-json" namespace="/alipay">
+        <action name="callValidateAliPay" class="com.sinosoft.ebusiness.spci.precisequote.AliPaymentAction" method="callValidateAliPay">
+            <result type="json" />
+        </action>
+
+        <action name="callAliPay" class="com.sinosoft.ebusiness.spci.precisequote.AliPaymentAction" method="callAliPay">
+            <result name="success">/WEB-INF/view/billreceive/alipay.jsp</result>
+        </action>
+
+        <action name="callTMAliPay" class="com.sinosoft.ebusiness.spci.precisequote.AliPaymentAction" method="callTMAliPay">
+            <result name="success">/WEB-INF/view/billreceive/alipay.jsp</result>
+        </action>
+
+        <action name="payReceive" class="com.sinosoft.ebusiness.spci.precisequote.AliPaymentAction" method="payReceive">
+            <result type="json" />
+        </action>
+
+        <action name="payTMReceive" class="com.sinosoft.ebusiness.spci.precisequote.AliPaymentAction" method="payTMReceive">
+            <result type="json" />
+        </action>
+
+        <action name="payStrongReceive" class="com.sinosoft.ebusiness.spci.precisequote.AliPaymentAction" method="payStrongReceive">
+            <result type="json" />
+        </action>
+    </package>
+
+	<!-- 客户留言板提交 -->
+	<package name="userExperience" extends="eb-json" namespace="/userExperience">
+		<action name="messageSubmit" class="com.sinosoft.ebusiness.spci.precisequote.PremiumPaymentAction" method="messageSubmit">
+		    <result type="json" />
+		</action>
+
+        <action name="saveMemberCenter" class="com.sinosoft.ebusiness.spci.precisequote.PremiumPaymentAction" method="addDataToMember">
+            <result type="json" />
+        </action>
+	</package>
+
+	<!-- 报表 -->
+	<package name="report" extends="eb-struts" namespace="/report">
+		<action name="applicant" class="com.sinosoft.ebusiness.spci.report.ApplicantFormAction" method="getApplicantForm">
+			<result name="success">/report/applicantReport.jsp</result>
+		</action>
+
+		<action name="policy" class="com.sinosoft.ebusiness.spci.report.PolicyFormAction" method="getPolicyForm">
+			<result name="success">/report/policyReport.jsp</result>
+		</action>
+
+		<action name="cqrcode" class="com.sinosoft.ebusiness.spci.report.CQRCodeAction" method="getCQRCode">
+		</action>
+
+		<action name="rate" class="com.sinosoft.ebusiness.spci.report.RateFormAction" method="getRateForm">
+			<result name="success">/report/rateReport.jsp</result>
+		</action>
+	</package>
+
+	<!-- 问卷调查 -->
+	<package name="question" extends="eb-json" namespace="/question">
+		<action name="save" class="com.sinosoft.ebusiness.spci.precisequote.QuestionAction" method="save">
+			<result type="json" />
+		</action>
+
+		<action name="questioned" class="com.sinosoft.ebusiness.spci.precisequote.QuestionAction" method="questioned">
+			<result type="json" />
+		</action>
+	</package>
+
+	<package name="browser" extends="struts-default" namespace="/browser">
+		<action name="checkbrowser" class="com.sinosoft.ebusiness.spci.home.web.BrowserAction" method="check">
+			<result name="success">/WEB-INF/view/home/browserwarn.jsp</result>
+		</action>
+	</package>
+
+   <!-- 中奖礼物 -->
+    <package name="gift" extends="eb-json" namespace="/gift">
+        <!--是否event进入网销-->
+        <action name="isThroughEvent" class="com.sinosoft.ebusiness.spci.precisequote.GiftAction" method="throughEvent">
+            <result type="json" />
+        </action>
+
+        <!--是否重复-->
+        <action name="checkHasParticipated" class="com.sinosoft.ebusiness.spci.precisequote.GiftAction" method="checkHasParticipated">
+            <result type="json" />
+        </action>
+
+        <!--保存-->
+        <action name="save" class="com.sinosoft.ebusiness.spci.precisequote.GiftAction" method="save">
+            <result type="json" />
+        </action>
+
+        <!-- 更新用户信息 -->
+        <action name="update" class="com.sinosoft.ebusiness.spci.precisequote.GiftAction" method="updateCustomerInfo">
+            <result type="json" />
+        </action>
+        
+        <!-- 处理抽奖结果 -->
+        <action name="findWinYN" class="com.sinosoft.ebusiness.spci.precisequote.GiftAction" method="findWinYN">
+            <result type="json" />
+        </action>
+
+        <!-- 处理抽奖结果 -->
+        <action name="sendPrizeWinnerInfo" class="com.sinosoft.ebusiness.spci.precisequote.GiftAction" method="sendPrizeWinnerInfo">
+            <result type="json" />
+        </action>
+        
+		<!-- 东方CJ活动-->
+		<action name="checkValidCjId" class="com.sinosoft.ebusiness.spci.precisequote.GiftAction" method="checkValidCjId">
+			<result type="json" />	
+		</action>
+
+        <!-- 易购网活动-->
+        <action name="checkValidYGWId" class="com.sinosoft.ebusiness.spci.precisequote.GiftAction" method="checkValidYGWId">
+            <result type="json" />
+        </action>
+		
+        <!-- 驴妈妈活动-->
+        <action name="checkValidLMMId" class="com.sinosoft.ebusiness.spci.precisequote.GiftAction" method="checkValidLMMId">
+            <result type="json" />  
+        </action>
+
+        <action name="checkValidPhoneOrCarNo" class="com.sinosoft.ebusiness.spci.precisequote.GiftAction" method="checkValidPhoneOrCarNo">
+            <result type="json" />
+        </action>
+    </package>
+    
+    <!-- 合作公司处理 -->
+    <package name="cooperation" extends="eb-json" namespace="/cooperation">
+        <!--ipanel-->
+        <action name="ipanelDo" class="com.sinosoft.ebusiness.partner.web.CooperationAction" method="ipanelDo">
+            <result type="json" />
+        </action>
+        
+        <!--samplingEngine 尚易-->
+        <action name="samplingEngineDo" class="com.sinosoft.ebusiness.partner.web.CooperationAction" method="samplingEngineDo">
+            <result type="json" />
+        </action>
+
+        <!--车易安 尚易-->
+        <action name="cheyianDo" class="com.sinosoft.ebusiness.partner.web.CooperationAction" method="cheyianDo">
+            <result type="json" />
+        </action>
+        
+        <!--东方CJ 尚易-->
+        <action name="dongFangCJDo" class="com.sinosoft.ebusiness.partner.web.CooperationAction" method="dongFangCJDo">
+            <result type="json" />
+        </action>
+
+    </package>
+
+    <package name="tm" extends="struts-default" namespace="/tmproposal">
+        <action name="init" class="com.sinosoft.ebusiness.spci.electronic.ProposalInfoAction" method="init">
+            <result>/WEB-INF/view/tm/login.jsp</result>
+        </action>
+
+        <action name="confirm" class="com.sinosoft.ebusiness.spci.electronic.ProposalInfoAction" method="confirm">
+            <result>/WEB-INF/view/tm/login.jsp</result>
+        </action>
+    </package>
+
+    <!-- 续保专用通道 -->
+    <package name="renewal" extends="struts-default" namespace="/renewal">
+        <action name="init" class="com.sinosoft.ebusiness.spci.precisequote.RenewalAction" method="init">
+            <result name="success">/index.jsp?keyId=${keyid}</result>
+            <result name="error">/WEB-INF/view/web/travel/landing201412_2.jsp?error=capchar</result>
+        </action>
+
+        <!--<action name="test" class="com.sinosoft.ebusiness.spci.precisequote.RenewalAction" method="doDefault">
+            <result name="success">/WEB-INF/view/precisequote/test.jsp</result>
+        </action>-->
+    </package>
+    
+    <!-- 续保专用通道  - 手机网站 -->
+    <package name="renewal_mobile"  extends="eb-json" namespace="/renewal_mobile">
+        <action name="init_mobile" class="com.sinosoft.ebusiness.spci.precisequote.RenewalAction" method="init_mobile">
+            <result type="json" />
+        </action>
+    </package>
+
+    <!-- OK车险 -->
+    <package name="okchexian" extends="json-default" namespace="/okchexian">
+        <action name="ok" class="com.sinosoft.ebusiness.spci.precisequote.OKCheXianAction" method="ok">
+            <result type="json" />
+        </action>
+    </package>
+
+</struts>
